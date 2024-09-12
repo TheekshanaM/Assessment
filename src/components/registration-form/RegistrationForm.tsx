@@ -3,8 +3,12 @@ import { Formik, FormikHelpers } from "formik";
 import FormInput from "../ui/FormInput";
 import { validationSchema } from "../../pages/registration/Validation";
 import { TRegistrationForm } from "../../type/user";
+import { register } from "../../services/user-services";
+import useToast from "../../hooks/useToast";
 
 function RegistrationForm() {
+  const toast = useToast();
+
   const initialValues: TRegistrationForm = {
     name: "",
     email: "",
@@ -12,11 +16,23 @@ function RegistrationForm() {
     confirmPassword: "",
   };
 
+  //   submit registration form data
   const handleFormSubmit = async (
     values: TRegistrationForm,
-    { setSubmitting }: FormikHelpers<TRegistrationForm>
+    { setSubmitting, resetForm }: FormikHelpers<TRegistrationForm>
   ) => {
-    console.log(values);
+    const { ok, error } = register({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
+
+    if (!ok && error) {
+      toast.error(error);
+    } else {
+      toast.success("Successfully registered.");
+      resetForm();
+    }
 
     setSubmitting(false);
   };

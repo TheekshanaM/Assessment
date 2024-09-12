@@ -4,4 +4,4 @@ export interface IUser {
   password: string;
 }
 
-export type TRegistrationForm = IUser | { confirmPassword: string };
+export type TRegistrationForm = IUser & { confirmPassword: string };

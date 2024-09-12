@@ -32,11 +32,13 @@ function Registration() {
             Sign up
           </Typography>
 
+          {/* Registration form UI */}
           <RegistrationForm />
 
+          {/* redirect to login page */}
           <Grid2 container justifyContent="center">
             <Grid2>
-              <MUILink to="/sign-in" component={Link} variant="body2">
+              <MUILink to="/login" component={Link} variant="body2">
                 Already have an account? Sign in
               </MUILink>
             </Grid2>
