@@ -1,28 +1,29 @@
 import { Box, Button, Grid2 } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import FormInput from "../ui/FormInput";
-import { registrationValidationSchema } from "./registrationValidation";
-import { TRegistrationForm } from "../../type/user";
-import { register } from "../../services/user-services";
+import { TLoginForm } from "../../type/user";
 import useToast from "../../hooks/useToast";
+import { loginValidationSchema } from "./LoginValidation";
+import { signIn } from "../../services/user-services";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
-function RegistrationForm() {
+function LoginForm() {
   const toast = useToast();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const initialValues: TRegistrationForm = {
-    name: "",
+  const initialValues: TLoginForm = {
     email: "",
     password: "",
-    confirmPassword: "",
   };
 
-  //   submit registration form data
+  //   submit Login form data
   const handleFormSubmit = async (
-    values: TRegistrationForm,
-    { setSubmitting, resetForm }: FormikHelpers<TRegistrationForm>
+    values: TLoginForm,
+    { setSubmitting, resetForm }: FormikHelpers<TLoginForm>
   ) => {
-    const { ok, error } = register({
-      name: values.name,
+    const { ok, data, error } = signIn({
       email: values.email,
       password: values.password,
     });
@@ -30,8 +31,11 @@ function RegistrationForm() {
     if (!ok && error) {
       toast.error(error);
     } else {
-      toast.success("Successfully registered.");
+      // set user data and redirected to todo page
+      if (data) login(data);
+      toast.success("Successfully Login.");
       resetForm();
+      navigate("/");
     }
 
     setSubmitting(false);
@@ -41,7 +45,7 @@ function RegistrationForm() {
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={registrationValidationSchema}
+        validationSchema={loginValidationSchema}
         onSubmit={handleFormSubmit}
       >
         {({ isValid, isSubmitting, handleSubmit }) => (
@@ -53,15 +57,6 @@ function RegistrationForm() {
               sx={{ mt: 3 }}
             >
               <Grid2 container spacing={2}>
-                <Grid2 size={{ xs: 12 }}>
-                  <FormInput
-                    autoComplete="given-name"
-                    name="name"
-                    label="Name"
-                    autoFocus
-                  />
-                </Grid2>
-
                 <Grid2 size={{ xs: 12 }}>
                   <FormInput
                     label="Email Address"
@@ -77,14 +72,6 @@ function RegistrationForm() {
                     autoComplete="new-password"
                   />
                 </Grid2>
-                <Grid2 size={{ xs: 12 }}>
-                  <FormInput
-                    name="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    autoComplete="new-password"
-                  />
-                </Grid2>
               </Grid2>
               <Button
                 type="submit"
@@ -93,7 +80,7 @@ function RegistrationForm() {
                 sx={{ mt: 3, mb: 2 }}
                 disabled={!isValid || isSubmitting}
               >
-                Sign Up
+                Login
               </Button>
             </Box>
           </>
@@ -103,4 +90,4 @@ function RegistrationForm() {
   );
 }
 
-export default RegistrationForm;
+export default LoginForm;
