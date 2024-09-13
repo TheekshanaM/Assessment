@@ -1,9 +1,11 @@
 import { Grid2, Paper, SelectChangeEvent, Typography } from "@mui/material";
 import FormSelect from "../ui/FormSelect";
-import { ITodo } from "../../type/todo";
-import { Formik, FormikErrors } from "formik";
+import { ITodo, TTodoStatusUpdate } from "../../type/todo";
+import { useAppDispatch } from "../../hooks/reduxHooks";
+import { updateTodoStatus } from "../../store/slices/todoSlice";
 
 function TodoItem({ todo }: { todo: ITodo }) {
+  const dispatch = useAppDispatch();
   const option = [
     {
       value: "incomplete",
@@ -17,17 +19,15 @@ function TodoItem({ todo }: { todo: ITodo }) {
 
   const handleChange = (
     e: SelectChangeEvent<unknown>,
-    setFieldValue: (
-      field: string,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value: any,
-      shouldValidate?: boolean
-    ) => Promise<void | FormikErrors<{
-      sort: string;
-    }>>
+
+    id: string
   ) => {
-    const value = e.target.value as string;
-    setFieldValue(e.target.name, value);
+    const value = e.target.value as "completed" | "incomplete";
+    const todo: TTodoStatusUpdate = {
+      id: id,
+      status: value,
+    };
+    dispatch(updateTodoStatus(todo));
   };
   return (
     <Paper elevation={3} style={{ padding: "16px", marginBottom: "16px" }}>
@@ -39,22 +39,18 @@ function TodoItem({ todo }: { todo: ITodo }) {
 
         {/* Status Select */}
         <Grid2>
-          <Formik initialValues={{}} onSubmit={() => {}}>
-            {({ setFieldValue }) => (
-              <FormSelect
-                name="status"
-                label="Status"
-                options={option}
-                selectProps={{
-                  value: todo.status,
-                  onChange: (e) => {
-                    handleChange(e, setFieldValue);
-                  },
-                }}
-                formControlProps={{ variant: "outlined", size: "small" }}
-              />
-            )}
-          </Formik>
+          <FormSelect
+            name="status"
+            label="Status"
+            options={option}
+            selectProps={{
+              value: todo.status,
+              onChange: (e) => {
+                handleChange(e, todo.id);
+              },
+            }}
+            formControlProps={{ variant: "outlined", size: "small" }}
+          />
         </Grid2>
       </Grid2>
 

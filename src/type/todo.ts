@@ -6,3 +6,5 @@ export interface ITodo {
 }
 
 export type TTodoForm = Pick<ITodo, "title" | "description">;
+
+export type TTodoStatusUpdate = Pick<ITodo, "id" | "status">;
