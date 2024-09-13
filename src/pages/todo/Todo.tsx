@@ -1,11 +1,13 @@
-import { Box, Button, Container, Grid2, Typography } from "@mui/material";
+import { Box, Button, Container, Drawer, Grid2 } from "@mui/material";
 import TodoList from "../../components/todo/TodoList";
 import { Formik } from "formik";
 import FormSelect from "../../components/ui/FormSelect";
 import { useState } from "react";
+import AddTodo from "../../components/todo/manage-todo/AddTodo";
 
 function Todo() {
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState<string>("all");
+  const [openAddTodo, setOpenAddTodo] = useState(false);
   const option = [
     {
       value: "all",
@@ -27,7 +29,9 @@ function Todo() {
           <>
             <Grid2 container>
               <Grid2 flexGrow={1}>
-                <Button variant="outlined">Add Todo</Button>
+                <Button variant="outlined" onClick={() => setOpenAddTodo(true)}>
+                  Add Todo
+                </Button>
               </Grid2>
               <Grid2 width={150}>
                 <FormSelect
@@ -36,7 +40,7 @@ function Todo() {
                   options={option}
                   selectProps={{
                     value: filter,
-                    onChange: (e) => setFilter(e.target.value),
+                    onChange: (e) => setFilter(e.target.value as string),
                   }}
                   formControlProps={{ variant: "outlined", size: "small" }}
                 />
@@ -48,6 +52,14 @@ function Todo() {
             </Box>
           </>
         </Formik>
+
+        <Drawer
+          anchor={"right"}
+          open={openAddTodo}
+          onClose={() => setOpenAddTodo((preState) => !preState)}
+        >
+          <AddTodo />
+        </Drawer>
       </Container>
     </>
   );
