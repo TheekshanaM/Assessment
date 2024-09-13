@@ -1,35 +1,35 @@
 import { Box, Button, Container, Drawer, Grid2 } from "@mui/material";
 import TodoList from "../../components/todo/TodoList";
 import { Formik } from "formik";
-import FormSelect from "../../components/ui/FormSelect";
-import { useState } from "react";
+// import FormSelect from "../../components/ui/FormSelect";
+// import { useState } from "react";
 import AddTodo from "../../components/todo/manage-todo/AddTodo";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { openAddingDrawer, openEditDrawer } from "../../store/slices/todoSlice";
 import EditTodo from "../../components/todo/manage-todo/EditTodo";
 
 function Todo() {
-  const [filter, setFilter] = useState<string>("all");
+  // const [filter, setFilter] = useState<string>("all");
 
   const { openAddTodo, openEditTodo } = useAppSelector(
     (state) => state.todo.todos
   );
   const dispatch = useAppDispatch();
 
-  const option = [
-    {
-      value: "all",
-      label: "All",
-    },
-    {
-      value: "incomplete",
-      label: "Incomplete",
-    },
-    {
-      value: "complete",
-      label: "Complete",
-    },
-  ];
+  // const option = [
+  //   {
+  //     value: "all",
+  //     label: "All",
+  //   },
+  //   {
+  //     value: "incomplete",
+  //     label: "Incomplete",
+  //   },
+  //   {
+  //     value: "complete",
+  //     label: "Complete",
+  //   },
+  // ];
   return (
     <>
       <Container maxWidth="md" style={{ marginTop: "24px" }}>
@@ -44,7 +44,7 @@ function Todo() {
                   Add Todo
                 </Button>
               </Grid2>
-              <Grid2 width={150}>
+              {/* <Grid2 width={150}>
                 <FormSelect
                   name="filter"
                   label="Filter"
@@ -55,7 +55,7 @@ function Todo() {
                   }}
                   formControlProps={{ variant: "outlined", size: "small" }}
                 />
-              </Grid2>
+              </Grid2> */}
             </Grid2>
 
             <Box sx={{ my: 2 }}>
