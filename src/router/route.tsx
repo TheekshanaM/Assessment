@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import Protected from "./ProtectedRoute";
 
 const Registration = lazy(() => import("../pages/registration/Registration"));
 const Login = lazy(() => import("../pages/login/Login"));
@@ -8,7 +9,11 @@ const Todo = lazy(() => import("../pages/todo/Todo"));
 const router = createBrowserRouter([
   {
     path: "/todo",
-    element: <Todo />,
+    element: (
+      <Protected>
+        <Todo />
+      </Protected>
+    ),
   },
   {
     path: "/registration",

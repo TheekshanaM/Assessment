@@ -7,14 +7,20 @@ import AddTodo from "../../components/todo/manage-todo/AddTodo";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { openAddingDrawer, openEditDrawer } from "../../store/slices/todoSlice";
 import EditTodo from "../../components/todo/manage-todo/EditTodo";
+import useAuth from "../../hooks/useAuth";
 
 function Todo() {
   // const [filter, setFilter] = useState<string>("all");
+  const { logout } = useAuth();
 
   const { openAddTodo, openEditTodo } = useAppSelector(
     (state) => state.todo.todos
   );
   const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   // const option = [
   //   {
@@ -33,6 +39,10 @@ function Todo() {
   return (
     <>
       <Container maxWidth="md" style={{ marginTop: "24px" }}>
+        <Button variant="outlined" onClick={handleLogout} sx={{ mb: 2 }}>
+          logout
+        </Button>
+
         <Formik initialValues={{}} onSubmit={() => {}}>
           <>
             <Grid2 container>
