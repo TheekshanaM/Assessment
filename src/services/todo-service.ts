@@ -108,3 +108,31 @@ export function updateTodoItem(
     return { ok: false, error: "Unexpected Error." };
   }
 }
+
+// delete todo
+export function deleteTodoItem(id: string): ServiceResponse<string> {
+  try {
+    const existingTodos = localStorage.getItem("todos");
+
+    let jsonObject = [];
+    // find todo item and update todo
+    if (existingTodos) {
+      jsonObject = JSON.parse(existingTodos) as Array<ITodo>;
+
+      const filetedData = jsonObject.filter((item) => {
+        if (item.id !== id) {
+          return item;
+        }
+      });
+      localStorage.setItem("todos", JSON.stringify(filetedData));
+    } else {
+      return { ok: false, error: "Invalid Item." };
+    }
+
+    return { ok: true, data: id };
+  } catch (error) {
+    console.log(error);
+
+    return { ok: false, error: "Unexpected Error." };
+  }
+}

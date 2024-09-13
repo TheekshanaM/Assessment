@@ -1,6 +1,9 @@
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import {
-  Button,
   Grid2,
+  IconButton,
   Paper,
   SelectChangeEvent,
   Typography,
@@ -9,6 +12,7 @@ import FormSelect from "../ui/FormSelect";
 import { ITodo, TTodoStatusUpdate } from "../../type/todo";
 import { useAppDispatch } from "../../hooks/reduxHooks";
 import {
+  openDeleteModel,
   openEditDrawer,
   selectTodo,
   updateTodoStatus,
@@ -41,6 +45,11 @@ function TodoItem({ todo }: { todo: ITodo }) {
     dispatch(openEditDrawer(true));
   };
 
+  const deleteConfirmation = (todo: ITodo) => {
+    dispatch(selectTodo(todo));
+    dispatch(openDeleteModel(true));
+  };
+
   return (
     <Paper elevation={3} style={{ padding: "16px", marginBottom: "16px" }}>
       <Grid2 container alignItems="center" justifyContent="space-between">
@@ -49,24 +58,34 @@ function TodoItem({ todo }: { todo: ITodo }) {
           <Typography variant="h6">{todo.title}</Typography>
         </Grid2>
 
-        <Grid2>
-          <Button onClick={() => editTodo(todo)}>tt</Button>
-        </Grid2>
+        <Grid2 container>
+          {/* Status Select */}
+          <Grid2>
+            <FormSelect
+              name="status"
+              label="Status"
+              options={option}
+              selectProps={{
+                value: todo.status,
+                onChange: (e) => {
+                  handleChange(e, todo.id);
+                },
+              }}
+              formControlProps={{ variant: "outlined", size: "small" }}
+            />
+          </Grid2>
 
-        {/* Status Select */}
-        <Grid2>
-          <FormSelect
-            name="status"
-            label="Status"
-            options={option}
-            selectProps={{
-              value: todo.status,
-              onChange: (e) => {
-                handleChange(e, todo.id);
-              },
-            }}
-            formControlProps={{ variant: "outlined", size: "small" }}
-          />
+          <Grid2 sx={{ ml: 2 }}>
+            <IconButton onClick={() => editTodo(todo)}>
+              <BorderColorIcon fontSize="small" />
+            </IconButton>
+          </Grid2>
+
+          <Grid2>
+            <IconButton onClick={() => deleteConfirmation(todo)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Grid2>
         </Grid2>
       </Grid2>
 

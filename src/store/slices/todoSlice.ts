@@ -9,6 +9,7 @@ import {
 import useToast from "../../hooks/useToast";
 import {
   createTodo,
+  deleteTodoItem,
   getTodoList,
   updateStatus,
   updateTodoItem,
@@ -20,6 +21,7 @@ export interface IInitialTodoState {
     isLoading: boolean;
     openAddTodo: boolean;
     openEditTodo: boolean;
+    openDeleteTodo: boolean;
   };
   selectedTodo: ITodo | null;
 }
@@ -30,6 +32,7 @@ const initialState: IInitialTodoState = {
     isLoading: false,
     openAddTodo: false,
     openEditTodo: false,
+    openDeleteTodo: false,
   },
   selectedTodo: null,
 };
@@ -114,6 +117,26 @@ export const updateTodo = createAsyncThunk(
   }
 );
 
+export const deleteTodo = createAsyncThunk(
+  "todos/deleteTodo",
+  async (id: string, { dispatch, rejectWithValue }) => {
+    try {
+      const toast = useToast();
+      const { ok, error } = deleteTodoItem(id);
+
+      if (!ok && error) {
+        toast.error(error);
+        return rejectWithValue(error as string);
+      }
+
+      dispatch(openDeleteModel(false));
+      dispatch(getTodo());
+    } catch (error) {
+      return rejectWithValue(error as string);
+    }
+  }
+);
+
 export const todoSlice = createSlice({
   name: "todos",
   initialState,
@@ -133,6 +156,12 @@ export const todoSlice = createSlice({
     selectTodo: (state, action: PayloadAction<ITodo>) => {
       state.selectedTodo = action.payload;
     },
+    openDeleteModel: (state, action: PayloadAction<boolean>) => {
+      state.todos.openDeleteTodo = action.payload;
+      if (!action.payload) {
+        state.selectedTodo = null;
+      }
+    },
   },
   // extraReducers(builder) {
   // builder
@@ -149,7 +178,12 @@ export const todoSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { openAddingDrawer, setTodos, openEditDrawer, selectTodo } =
-  todoSlice.actions;
+export const {
+  openAddingDrawer,
+  setTodos,
+  openEditDrawer,
+  selectTodo,
+  openDeleteModel,
+} = todoSlice.actions;
 
 export default todoSlice.reducer;
