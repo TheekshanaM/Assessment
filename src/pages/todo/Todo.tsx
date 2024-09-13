@@ -4,10 +4,15 @@ import { Formik } from "formik";
 import FormSelect from "../../components/ui/FormSelect";
 import { useState } from "react";
 import AddTodo from "../../components/todo/manage-todo/AddTodo";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { openAddingDrawer } from "../../store/slices/todoSlice";
 
 function Todo() {
   const [filter, setFilter] = useState<string>("all");
-  const [openAddTodo, setOpenAddTodo] = useState(false);
+
+  const openAddTodo = useAppSelector((state) => state.todo.todos.openAddTodo);
+  const dispatch = useAppDispatch();
+
   const option = [
     {
       value: "all",
@@ -29,7 +34,10 @@ function Todo() {
           <>
             <Grid2 container>
               <Grid2 flexGrow={1}>
-                <Button variant="outlined" onClick={() => setOpenAddTodo(true)}>
+                <Button
+                  variant="outlined"
+                  onClick={() => dispatch(openAddingDrawer(true))}
+                >
                   Add Todo
                 </Button>
               </Grid2>
@@ -56,7 +64,7 @@ function Todo() {
         <Drawer
           anchor={"right"}
           open={openAddTodo}
-          onClose={() => setOpenAddTodo((preState) => !preState)}
+          onClose={() => dispatch(openAddingDrawer(false))}
         >
           <AddTodo />
         </Drawer>
