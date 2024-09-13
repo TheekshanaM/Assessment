@@ -13,7 +13,7 @@ function App() {
       <Suspense fallback={<Loader />}>
         <AuthProvider>
           <SnackbarProvider
-            autoHideDuration={5000}
+            autoHideDuration={3000}
             anchorOrigin={{ horizontal: "center", vertical: "top" }}
           >
             <RouterProvider router={router} />

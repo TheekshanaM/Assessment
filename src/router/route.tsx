@@ -1,24 +1,19 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import Protected from "./ProtectedRoute";
 
 const Registration = lazy(() => import("../pages/registration/Registration"));
 const Login = lazy(() => import("../pages/login/Login"));
 const Todo = lazy(() => import("../pages/todo/Todo"));
-const AddTodo = lazy(() => import("../pages/todo/add-todo/AddTodo"));
-const EditTodo = lazy(() => import("../pages/todo/edit-todo/EditTodo"));
 
 const router = createBrowserRouter([
   {
     path: "/todo",
-    element: <Todo />,
-  },
-  {
-    path: "/todo/add-todo",
-    element: <AddTodo />,
-  },
-  {
-    path: "/todo/edit-todo/:id",
-    element: <EditTodo />,
+    element: (
+      <Protected>
+        <Todo />
+      </Protected>
+    ),
   },
   {
     path: "/registration",

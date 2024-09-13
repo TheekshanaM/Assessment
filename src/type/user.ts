@@ -12,4 +12,6 @@ export interface IAuthContextType {
   isAuthenticate: boolean;
   user: IUser | null;
   login: (user: IUser) => void;
+  isCheckingAuthState: boolean;
+  logout: () => void;
 }
