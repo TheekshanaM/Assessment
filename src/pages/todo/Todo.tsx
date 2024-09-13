@@ -5,12 +5,15 @@ import FormSelect from "../../components/ui/FormSelect";
 import { useState } from "react";
 import AddTodo from "../../components/todo/manage-todo/AddTodo";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { openAddingDrawer } from "../../store/slices/todoSlice";
+import { openAddingDrawer, openEditDrawer } from "../../store/slices/todoSlice";
+import EditTodo from "../../components/todo/manage-todo/EditTodo";
 
 function Todo() {
   const [filter, setFilter] = useState<string>("all");
 
-  const openAddTodo = useAppSelector((state) => state.todo.todos.openAddTodo);
+  const { openAddTodo, openEditTodo } = useAppSelector(
+    (state) => state.todo.todos
+  );
   const dispatch = useAppDispatch();
 
   const option = [
@@ -67,6 +70,14 @@ function Todo() {
           onClose={() => dispatch(openAddingDrawer(false))}
         >
           <AddTodo />
+        </Drawer>
+
+        <Drawer
+          anchor={"right"}
+          open={openEditTodo}
+          onClose={() => dispatch(openEditDrawer(false))}
+        >
+          <EditTodo />
         </Drawer>
       </Container>
     </>

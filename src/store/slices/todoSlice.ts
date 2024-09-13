@@ -1,11 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { ITodo, TTodoForm, TTodoStatusUpdate } from "../../type/todo";
+import {
+  ITodo,
+  TTodoForm,
+  TTodoStatusUpdate,
+  TTodoUpdate,
+} from "../../type/todo";
 import useToast from "../../hooks/useToast";
 import {
   createTodo,
   getTodoList,
   updateStatus,
+  updateTodoItem,
 } from "../../services/todo-service";
 
 export interface IInitialTodoState {
@@ -13,11 +19,19 @@ export interface IInitialTodoState {
     data: Array<ITodo>;
     isLoading: boolean;
     openAddTodo: boolean;
+    openEditTodo: boolean;
   };
+  selectedTodo: ITodo | null;
 }
 
 const initialState: IInitialTodoState = {
-  todos: { data: [], isLoading: false, openAddTodo: false },
+  todos: {
+    data: [],
+    isLoading: false,
+    openAddTodo: false,
+    openEditTodo: false,
+  },
+  selectedTodo: null,
 };
 
 export const addTodo = createAsyncThunk(
@@ -62,20 +76,38 @@ export const getTodo = createAsyncThunk(
 );
 
 export const updateTodoStatus = createAsyncThunk(
-  "todos/updateTodo",
+  "todos/updateTodoStatus",
   async (todo: TTodoStatusUpdate, { dispatch, rejectWithValue }) => {
     try {
       const toast = useToast();
-      const { ok, data, error } = updateStatus(todo);
+      const { ok, error } = updateStatus(todo);
 
       if (!ok && error) {
         toast.error(error);
         return rejectWithValue(error as string);
       }
 
-      if (data) {
-        dispatch(getTodo());
+      dispatch(getTodo());
+    } catch (error) {
+      return rejectWithValue(error as string);
+    }
+  }
+);
+
+export const updateTodo = createAsyncThunk(
+  "todos/updateTodo",
+  async (todo: TTodoUpdate, { dispatch, rejectWithValue }) => {
+    try {
+      const toast = useToast();
+      const { ok, error } = updateTodoItem(todo);
+
+      if (!ok && error) {
+        toast.error(error);
+        return rejectWithValue(error as string);
       }
+
+      dispatch(openEditDrawer(false));
+      dispatch(getTodo());
     } catch (error) {
       return rejectWithValue(error as string);
     }
@@ -92,6 +124,15 @@ export const todoSlice = createSlice({
     setTodos: (state, action: PayloadAction<Array<ITodo>>) => {
       state.todos.data = action.payload;
     },
+    openEditDrawer: (state, action: PayloadAction<boolean>) => {
+      state.todos.openEditTodo = action.payload;
+      if (!action.payload) {
+        state.selectedTodo = null;
+      }
+    },
+    selectTodo: (state, action: PayloadAction<ITodo>) => {
+      state.selectedTodo = action.payload;
+    },
   },
   // extraReducers(builder) {
   // builder
@@ -104,19 +145,11 @@ export const todoSlice = createSlice({
   //   .addCase(addTodo.rejected, (state, action) => {
   //     // state.chatbots.isLoading = false;
   //   })
-  //   .addCase(getTodo.pending, (state) => {
-  //     // state.chatbots.isLoading = true;
-  //   })
-  //   .addCase(getTodo.fulfilled, (state, action) => {
-  //     // state.chatbots.isLoading = false;
-  //   })
-  //   .addCase(getTodo.rejected, (state, action) => {
-  //     // state.chatbots.isLoading = false;
-  //   });
   // },
 });
 
 // Action creators are generated for each case reducer function
-export const { openAddingDrawer, setTodos } = todoSlice.actions;
+export const { openAddingDrawer, setTodos, openEditDrawer, selectTodo } =
+  todoSlice.actions;
 
 export default todoSlice.reducer;
